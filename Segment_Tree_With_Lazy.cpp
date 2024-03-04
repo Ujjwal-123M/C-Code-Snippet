@@ -3,7 +3,7 @@ using namespace std;
 #define ll long long 
 #define N 200005
 ll arr[N]; // 1 based indexing me array me insert karni hai
-ll lazy[N];
+ll lazy[4*N];
 ll seg[4*N];
 void buildTree(int pos,int l,int r){
     if(l==r) {
