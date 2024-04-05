@@ -21,7 +21,7 @@ void update(int l,int r,int pos,int idx,int val){
         return;
     }
     ll mid=(l+r)/2;
-    if(mid<=idx)
+    if(mid>=idx)
     update(l,mid,2*pos,idx,val);
     else
     update(mid+1,r,2*pos+1,idx,val);
