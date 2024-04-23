@@ -7,7 +7,7 @@ class DisjointSet{
     DisjointSet(int n){
         rank.resize(n+1,0);
         parent.resize(n+1);
-        size.resize(n+1);
+        size.resize(n+1); // whenever size giving zero initialize it to 1
         for(int i=0;i<=n;i++) parent[i]=i;
           
     }
