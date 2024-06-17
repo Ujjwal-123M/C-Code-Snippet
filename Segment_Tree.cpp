@@ -51,3 +51,87 @@ int main()
 
     return 0;
 }
+
+
+// new template 
+#include <vector>
+using namespace std;
+
+class SegmentTree {
+public:
+    SegmentTree(const vector<int>& nums) {
+        n = nums.size();
+        tree.resize(4 * n, 0);
+        lazy.resize(4 * n, 0);
+        build(nums, 0, n - 1, 0);
+    }
+
+    int query(int l, int r) {
+        return queryUtil(0, n - 1, l, r, 0);
+    }
+
+    void updateRange(int l, int r, int val) {
+        updateRangeUtil(0, n - 1, l, r, val, 0);
+    }
+
+private:
+    int n;
+    vector<int> tree, lazy;
+
+    void build(const vector<int>& nums, int start, int end, int node) {
+        if (start == end) {
+            tree[node] = nums[start];
+        } else {
+            int mid = (start + end) / 2;
+            build(nums, start, mid, 2 * node + 1);
+            build(nums, mid + 1, end, 2 * node + 2);
+            tree[node] = tree[2 * node + 1] + tree[2 * node + 2];
+        }
+    }
+
+    void updateRangeUtil(int start, int end, int l, int r, int val, int node) {
+        if (lazy[node] != 0) {
+            tree[node] += (end - start + 1) * lazy[node];
+            if (start != end) {
+                lazy[2 * node + 1] += lazy[node];
+                lazy[2 * node + 2] += lazy[node];
+            }
+            lazy[node] = 0;
+        }
+
+        if (start > end || start > r || end < l) return;
+
+        if (start >= l && end <= r) {
+            tree[node] += (end - start + 1) * val;
+            if (start != end) {
+                lazy[2 * node + 1] += val;
+                lazy[2 * node + 2] += val;
+            }
+            return;
+        }
+
+        int mid = (start + end) / 2;
+        updateRangeUtil(start, mid, l, r, val, 2 * node + 1);
+        updateRangeUtil(mid + 1, end, l, r, val, 2 * node + 2);
+        tree[node] = tree[2 * node + 1] + tree[2 * node + 2];
+    }
+
+    int queryUtil(int start, int end, int l, int r, int node) {
+        if (start > end || start > r || end < l) return 0;
+
+        if (lazy[node] != 0) {
+            tree[node] += (end - start + 1) * lazy[node];
+            if (start != end) {
+                lazy[2 * node + 1] += lazy[node];
+                lazy[2 * node + 2] += lazy[node];
+            }
+            lazy[node] = 0;
+        }
+
+        if (start >= l && end <= r) return tree[node];
+
+        int mid = (start + end) / 2;
+        return queryUtil(start, mid, l, r, 2 * node + 1) + queryUtil(mid + 1, end, l, r, 2 * node + 2);
+    }
+};
+
